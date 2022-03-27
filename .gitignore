@@ -1,0 +1,26 @@
+# generic
+__MACOSX
+.DS_Store
+*.heapsnapshot
+*.seed
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+*.orig
+*.zip
+*.map
+pids
+logs
+tmp
+_tmp*
+
+# IDEs
+.vscode
+*.iml
+.idea
+
+# specific
+target
