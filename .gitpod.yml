@@ -1,0 +1,13 @@
+vscode:
+  extensions:
+    - belfz.search-crates-io
+    - bungcip.better-toml
+    - Equinusocio.vsc-community-material-theme
+    - serayuzgur.crates
+    - rust-lang.rust
+    - Swellaby.vscode-rust-test-adapter
+    - hbenl.test-adapter-converter
+    - equinusocio.vsc-material-theme-icons
+    - Equinusocio.vsc-material-theme
+    - hbenl.vscode-test-explorer
+    - vadimcn.vscode-lldb
