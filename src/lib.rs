@@ -8,24 +8,27 @@ use std::env;
 use std::io::Result;
 
 pub fn start() -> Result<()> {
+    let screen = Screen::new();
     loop {
-        let screen = Screen::new();
+        screen.render()?
     }
 }
 
+#[derive(Debug)]
 struct Screen {
-    state: Option<Box<dyn State>>,
+    state: Box<dyn State>,
 }
 
 impl Screen {
     fn new() -> Screen {
-        let first_state = match env::var("GITHUB_TOKEN") {
-            Ok(val) => WelcomeState::new(),
-            Err(e) => SetupState::new(),
+        let first_state: Box<dyn State> = match env::var("GITHUB_TOKEN") {
+            Ok(_) => Box::new(WelcomeState::new()),
+            Err(_) => Box::new(SetupState::new()),
         };
-        Screen {
-            state: Some(Box::new(first_state)),
-        }
+        Screen { state: first_state }
+    }
+    fn render(&self) -> Result<()> {
+        self.state.render()
     }
 }
 
