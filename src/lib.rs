@@ -1,6 +1,3 @@
-// use bunt;
-// use std::io::{stdin, stdout, Result, Write};
-
 mod states;
 
 use states::{SetupState, State, WelcomeState};
