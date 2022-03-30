@@ -1,6 +1,13 @@
-use gmg::start;
+mod commands;
+mod screen;
+mod states;
+
+use screen::Screen;
 use std::io::Result;
 
 fn main() -> Result<()> {
-    start()
+    let screen = Screen::new();
+    loop {
+        screen.render()?
+    }
 }

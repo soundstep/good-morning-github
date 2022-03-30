@@ -1,9 +1,7 @@
-#[path = "./commands.rs"]
-mod commands;
 mod setup;
 mod welcome;
 
-use commands::Command;
+use crate::commands::Command;
 pub use setup::SetupState;
 pub use welcome::WelcomeState;
 
@@ -13,6 +11,8 @@ use std::io::Result;
 pub trait State: std::fmt::Debug {
     fn print_title(&self);
     fn print_body(&self);
+    fn print_commands(&self);
+    fn print_input(&self);
     fn render(&self) -> Result<()> {
         Ok(())
     }

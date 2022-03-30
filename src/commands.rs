@@ -1,5 +1,11 @@
 #[derive(Debug)]
 pub struct Command {
-    key: String,
-    label: String,
+    pub key: String,
+    pub label: String,
+}
+
+impl Command {
+    pub fn new(key: String, label: String) -> Self {
+        Command { key, label }
+    }
 }

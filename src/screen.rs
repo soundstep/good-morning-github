@@ -1,30 +1,21 @@
-mod states;
-
-use states::{SetupState, State, WelcomeState};
+use crate::states::{SetupState, State, WelcomeState};
 use std::env;
 use std::io::Result;
 
-pub fn start() -> Result<()> {
-    let screen = Screen::new();
-    loop {
-        screen.render()?
-    }
-}
-
 #[derive(Debug)]
-struct Screen {
+pub struct Screen {
     state: Box<dyn State>,
 }
 
 impl Screen {
-    fn new() -> Screen {
+    pub fn new() -> Screen {
         let first_state: Box<dyn State> = match env::var("GITHUB_TOKEN") {
             Ok(_) => Box::new(WelcomeState::new()),
             Err(_) => Box::new(SetupState::new()),
         };
         Screen { state: first_state }
     }
-    fn render(&self) -> Result<()> {
+    pub fn render(&self) -> Result<()> {
         self.state.render()
     }
 }

@@ -33,6 +33,8 @@ impl State for SetupState {
         );
         println!();
     }
+    fn print_commands(&self) {}
+    fn print_input(&self) {}
     fn render(&self) -> Result<()> {
         self.print_title();
         self.print_body();
