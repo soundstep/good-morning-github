@@ -1,6 +1,3 @@
-// #[path = "../commands.rs"]
-// mod commands;
-
 use crate::commands::Command;
 use crate::states::{State, StateDefinition};
 use bunt;
