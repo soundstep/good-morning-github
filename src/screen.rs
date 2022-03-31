@@ -18,6 +18,8 @@ impl Screen {
     pub fn render(&self) -> Result<()> {
         self.state.render()
     }
+    pub fn next(&self, next: Box<dyn State>) {
+        println!("NEXT {:?}", next);
 }
 
 // pub fn start() -> Result<()> {

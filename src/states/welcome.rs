@@ -53,6 +53,9 @@ impl State for WelcomeState {
         stdout().flush()?;
         let mut input = String::new();
         stdin().read_line(&mut input).unwrap();
+        if (input == "1") {
+            // self.next(); // how to call next on parent struct?
+        }
         Ok(())
     }
 }
