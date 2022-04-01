@@ -1,4 +1,4 @@
-use crate::states::{SetupState, State, WelcomeState};
+use crate::states::{SetupState, State, StateStatus, WelcomeState};
 use std::env;
 use std::io::Result;
 
@@ -15,11 +15,25 @@ impl Screen {
         };
         Screen { state: first_state }
     }
-    pub fn render(&self) -> Result<()> {
+    pub fn render(&mut self) -> Result<()> {
+        self.observe_state();
         self.state.render()
     }
-    pub fn next(&self, next: Box<dyn State>) {
-        println!("NEXT {:?}", next);
+    pub fn observe_state(&mut self) {
+        let status = self.state.get_status();
+        println!("[screen] status: {:?}", status);
+        match status {
+            // StateStatus::Idle => std::process::exit(1),
+            // StateStatus::Previous => std::process::exit(2),
+            StateStatus::Next => {
+                if let Some(state) = self.state.get_next() {
+                    self.state = state;
+                }
+            }
+            StateStatus::Quit => std::process::exit(0),
+            _ => (),
+        };
+    }
 }
 
 // pub fn start() -> Result<()> {

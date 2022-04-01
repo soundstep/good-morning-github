@@ -1,4 +1,4 @@
-use crate::states::{State, StateDefinition};
+use crate::states::{State, StateDefinition, StateStatus};
 use bunt;
 use std::io::Result;
 
@@ -13,6 +13,7 @@ impl SetupState {
             definition: StateDefinition {
                 title: String::from("Still sleeping!"),
                 commands: None,
+                status: StateStatus::Idle,
             },
         }
     }
@@ -35,7 +36,7 @@ impl State for SetupState {
     }
     fn print_commands(&self) {}
     fn print_input(&self) {}
-    fn render(&self) -> Result<()> {
+    fn render(&mut self) -> Result<()> {
         self.print_title();
         self.print_body();
         std::process::exit(1);

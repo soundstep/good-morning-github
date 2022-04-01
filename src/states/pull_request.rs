@@ -1,22 +1,21 @@
 use crate::commands::Command;
-use crate::states::{PullRequestState, State, StateDefinition, StateStatus};
+use crate::states::{State, StateDefinition, StateStatus};
 use crate::utils::normalize_input;
 use bunt;
 use std::io::{stdin, stdout, Result, Write};
 
 #[derive(Debug)]
-pub struct WelcomeState {
+pub struct PullRequestState {
     definition: StateDefinition,
 }
 
-impl WelcomeState {
+impl PullRequestState {
     pub fn new() -> Self {
-        WelcomeState {
+        PullRequestState {
             definition: StateDefinition {
-                title: String::from("Good Morning Github!"),
+                title: String::from("Pull Requests"),
                 commands: Some(vec![
-                    Command::new(String::from("1"), String::from("Pull Requests")),
-                    Command::new(String::from("2"), String::from("Issues")),
+                    Command::new(String::from("esc"), String::from("Back")),
                     Command::new(String::from("q"), String::from("Quit")),
                 ]),
                 status: StateStatus::Idle,
@@ -25,7 +24,7 @@ impl WelcomeState {
     }
 }
 
-impl State for WelcomeState {
+impl State for PullRequestState {
     fn print_title(&self) {
         print!("\x1B[2J\x1B[1;1H"); // clear
         bunt::println!("{$cyan+bold}  {}{/$}", self.definition.title);
@@ -47,9 +46,6 @@ impl State for WelcomeState {
     fn get_status(&self) -> &StateStatus {
         &self.definition.status
     }
-    fn get_next(&self) -> Option<Box<dyn State>> {
-        Some(Box::new(PullRequestState::new()))
-    }
     fn render(&mut self) -> Result<()> {
         self.print_title();
         self.print_body();
@@ -62,8 +58,8 @@ impl State for WelcomeState {
         let input = normalize_input(input);
         println!("input: {:?}", input);
         self.definition.status = match input.as_str() {
-            "1" => StateStatus::Next,
-            "2" => StateStatus::Next,
+            "1" => StateStatus::Quit,
+            "2" => StateStatus::Quit,
             "q" => StateStatus::Quit,
             _ => StateStatus::Idle,
         };
