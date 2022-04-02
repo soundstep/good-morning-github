@@ -20,6 +20,9 @@ pub trait State: std::fmt::Debug {
     fn render(&mut self) -> Result<()> {
         Ok(())
     }
+    fn get_previous(&self) -> Option<Box<dyn State>> {
+        None
+    }
     fn get_next(&self) -> Option<Box<dyn State>> {
         None
     }

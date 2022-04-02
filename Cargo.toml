@@ -7,3 +7,5 @@ edition = "2021"
 
 [dependencies]
 bunt = "0.2.6"
+crossterm = "0.23.1"
+termion = "1.5.6"

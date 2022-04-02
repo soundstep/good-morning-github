@@ -1,8 +1,11 @@
 use crate::commands::Command;
-use crate::states::{State, StateDefinition, StateStatus};
+use crate::states::{State, StateDefinition, StateStatus, WelcomeState};
 use crate::utils::normalize_input;
 use bunt;
-use std::io::{stdin, stdout, Result, Write};
+use crossterm::event::{read, Event, KeyCode, KeyEvent, KeyModifiers};
+use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
+use crossterm::Result;
+use std::io::{stdin, stdout, Write};
 
 #[derive(Debug)]
 pub struct PullRequestState {
@@ -26,8 +29,12 @@ impl PullRequestState {
 
 impl State for PullRequestState {
     fn print_title(&self) {
-        print!("\x1B[2J\x1B[1;1H"); // clear
-        bunt::println!("{$cyan+bold}  {}{/$}", self.definition.title);
+        print!("\x1B[2J\x1B[1;1H");
+        bunt::println!(
+            "{$cyan+bold}  {}{/$} {:?}",
+            self.definition.title,
+            self.definition.status
+        );
         println!();
     }
     fn print_body(&self) {}
@@ -46,27 +53,54 @@ impl State for PullRequestState {
     fn get_status(&self) -> &StateStatus {
         &self.definition.status
     }
+    fn get_previous(&self) -> Option<Box<dyn State>> {
+        Some(Box::new(WelcomeState::new()))
+    }
     fn render(&mut self) -> Result<()> {
         self.print_title();
         self.print_body();
         self.print_commands();
-        println!("status: {:?}", self.definition.status);
         self.print_input();
         stdout().flush()?;
         let mut input = String::new();
-        stdin().read_line(&mut input).unwrap();
-        let input = normalize_input(input);
-        println!("input: {:?}", input);
-        self.definition.status = match input.as_str() {
-            "1" => StateStatus::Quit,
-            "2" => StateStatus::Quit,
-            "q" => StateStatus::Quit,
-            _ => StateStatus::Idle,
+        // check for escape
+        enable_raw_mode().unwrap();
+        let event = read().unwrap();
+        let next_key = match event {
+            Event::Key(KeyEvent {
+                code: KeyCode::Esc,
+                modifiers: KeyModifiers::NONE,
+            }) => Some(KeyCode::Esc),
+            Event::Key(KeyEvent {
+                code: KeyCode::Char(c),
+                modifiers: KeyModifiers::NONE,
+            }) => {
+                print!("{}", c);
+                stdout().flush()?;
+                Some(KeyCode::Char(c))
+            }
+            _ => None,
         };
-        if input == "q" {
-            self.definition.status = StateStatus::Quit;
-            println!("self.definition.status: {:?}", self.definition.status)
-            // self.next(); // how to call next on parent struct?
+        disable_raw_mode().unwrap();
+        if next_key == Some(KeyCode::Esc) {
+            self.definition.status = StateStatus::Previous;
+        } else {
+            stdin().read_line(&mut input).unwrap();
+            let input = normalize_input(input);
+            let input = match next_key {
+                Some(KeyCode::Char(c)) => c.to_string() + &input,
+                _ => input,
+            };
+            // println!("input {}", input);
+            self.definition.status = match input.as_str() {
+                "1" => StateStatus::Next,
+                "2" => StateStatus::Next,
+                "q" => StateStatus::Quit,
+                _ => StateStatus::Idle,
+            };
+            if input.len() == 1 && input == "q" {
+                self.definition.status = StateStatus::Quit;
+            }
         }
         Ok(())
     }

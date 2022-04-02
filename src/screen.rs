@@ -30,6 +30,12 @@ impl Screen {
                     self.state = state;
                 }
             }
+            StateStatus::Previous => {
+                println!("[screen] call previous");
+                if let Some(state) = self.state.get_previous() {
+                    self.state = state;
+                }
+            }
             StateStatus::Quit => std::process::exit(0),
             _ => (),
         };

@@ -60,17 +60,15 @@ impl State for WelcomeState {
         let mut input = String::new();
         stdin().read_line(&mut input).unwrap();
         let input = normalize_input(input);
-        println!("input: {:?}", input);
         self.definition.status = match input.as_str() {
             "1" => StateStatus::Next,
             "2" => StateStatus::Next,
             "q" => StateStatus::Quit,
             _ => StateStatus::Idle,
         };
-        if input == "q" {
+        if input.len() == 1 && input == "q" {
             self.definition.status = StateStatus::Quit;
             println!("self.definition.status: {:?}", self.definition.status)
-            // self.next(); // how to call next on parent struct?
         }
         Ok(())
     }
